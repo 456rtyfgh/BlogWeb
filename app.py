@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, render_template
 
 app = Flask(__name__)
 
@@ -33,8 +33,8 @@ def template(html):
 
 @app.route('/')
 def index():
-    html = '''<ul><li><a href="/create/">글쓰기</a></li></ul>'''
-    return template (html)
+    #html = '''<ul><li><a href="/create/">글쓰기</a></li></ul>'''
+    return render_template ('index.html', docs=docs)
 
 
 @app.route('/reads/<int:id>/')
@@ -60,18 +60,13 @@ def read(id):
     </li>
 </ul>
     '''
-    return template(html)
+    return render_template('read.html', docs=docs, title=title, content=content, id=id)
+
 
 @app.route('/create/', methods=['GET','POST'])
 def create():
     if request.method == 'GET':
-        html = '''
-        <form action="/create/" method="post">
-        <p><input  type="text" name="title" placeholder="제목"></p>
-        <p><textarea name="content" style="width: 484px; height: 232px;"></textarea></p>
-        <p><input type="submit" value="쓰기"></p>
-    </form>'''
-        return template(html)
+        return render_template ('create.html', docs=docs)
     elif request.method == 'POST':
         global nextId
         title = request.form['title']
@@ -97,7 +92,7 @@ def update(id):
         <p><textarea name="content">{content}</textarea></p>
         <p><input type="submit" value="수정"></p>
     </form>'''
-    return template(html)
+    return render_template('update.html', docs=docs, title=title, content=content, id=id)
 
 @app.route('/update/<int:id>/', methods=['POST'])
 def update_post(id):
